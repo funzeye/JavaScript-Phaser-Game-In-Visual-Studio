@@ -1,13 +1,53 @@
 module.exports = {
 
+    creatureGlobal: {
+        src: require('../manifests/creature-global'),
+        dest: '<%= modules_dir %>/creature-global.js'
+    },
+
+    creatureGlobalSplit: {
+        src: require('../manifests/creature-global'),
+        dest: '<%= compile_dir %>/creature.js'
+    },
+
+    creature: {
+        src: require('../manifests/creature'),
+        dest: '<%= modules_dir %>/creature.js'
+    },
+
+    p2Global: {
+        src: require('../manifests/p2'),
+        dest: '<%= modules_dir %>/p2-global.js'
+    },
+
+    p2GlobalSplit: {
+        src: require('../manifests/p2'),
+        dest: '<%= compile_dir %>/p2.js'
+    },
+
+    pixiIntro: {
+        src: require('../manifests/pixi-intro'),
+        dest: '<%= modules_dir %>/pixi-intro.js'
+    },
+
+    pixiRope: {
+        src: require('../manifests/pixi-rope'),
+        dest: '<%= modules_dir %>/pixi-rope.js'
+    },
+
+    pixiTileSprite: {
+        src: require('../manifests/pixi-tilesprite'),
+        dest: '<%= modules_dir %>/pixi-tilesprite.js'
+    },
+
+    pixiOutro: {
+        src: require('../manifests/pixi-outro'),
+        dest: '<%= modules_dir %>/pixi-outro.js'
+    },
+
     intro: {
         src: require('../manifests/intro'),
         dest: '<%= modules_dir %>/intro.js'
-    },
-
-    pixi: {
-        src: require('../manifests/pixi'),
-        dest: '<%= modules_dir %>/pixi.js'
     },
 
     phaser: {
@@ -95,6 +135,11 @@ module.exports = {
         dest: '<%= modules_dir %>/net.js'
     },
 
+    netStub: {
+        src: require('../manifests/net.stub'),
+        dest: '<%= modules_dir %>/net.js'
+    },
+
     tweens: {
         src: require('../manifests/tweens'),
         dest: '<%= modules_dir %>/tweens.js'
@@ -132,6 +177,11 @@ module.exports = {
 
     debug: {
         src: require('../manifests/debug'),
+        dest: '<%= modules_dir %>/debug.js'
+    },
+
+    debugStub: {
+        src: require('../manifests/debug.stub'),
         dest: '<%= modules_dir %>/debug.js'
     },
 
@@ -180,14 +230,29 @@ module.exports = {
         dest: '<%= modules_dir %>/particles.js'
     },
 
+    video: {
+        src: require('../manifests/video'),
+        dest: '<%= modules_dir %>/video.js'
+    },
+
+    rope: {
+        src: require('../manifests/rope'),
+        dest: '<%= modules_dir %>/rope.js'
+    },
+
+    tilesprite: {
+        src: require('../manifests/tilesprite'),
+        dest: '<%= modules_dir %>/tilesprite.js'
+    },
+
     outro: {
         src: require('../manifests/outro'),
         dest: '<%= modules_dir %>/outro.js'
     },
 
-    ///////////////////
-    //  Custom Build //
-    ///////////////////
+    ////////////////////
+    //  Custom Builds //
+    ////////////////////
 
     custom: {
         options: {
@@ -195,6 +260,14 @@ module.exports = {
         },
         src: ['<%= filelist %>'],
         dest: '<%= compile_dir %>/<%= filename %>.js'
+    },
+
+    pixi: {
+        options: {
+            banner: '<%= banner %>',
+        },
+        src: ['<%= pixiFilelist %>'],
+        dest: '<%= compile_dir %>/pixi.js'
     }
 
 };

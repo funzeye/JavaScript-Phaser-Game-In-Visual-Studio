@@ -4,8 +4,8 @@
 
 GameStates.Level2.prototype = {
     create: function () {
-
     },
+
     update: function () {
 
     },

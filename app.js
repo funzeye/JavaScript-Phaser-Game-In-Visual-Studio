@@ -8,6 +8,8 @@ window.onload = function() {
     game.state.add('Level1', GameStates.Level1);
     game.state.add('Level2', GameStates.Level2);
 
+    //game.player = new game.Player(game);
+
     //  Now start the Boot state.
     game.state.start('Boot');
 
