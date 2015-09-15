@@ -6,22 +6,21 @@ var player;
 var skeleton;
 var treasure;
 var treasureCollected = false;
-var jumpTimer = 0;
-var cursors;
-var jumpButton;
 var currentDir = "right";
 var enemySpeed = 40;
-var playerLives = 3;
-var lives;
-
+var music;
+var starCollideSFX;
+var jumpSFX;
+var ray;
+var tileHits = [];
 
 GameStates.Level1 = function (game) {
-
 };
 
 GameStates.Level1.prototype = {
 
-    create: function() {
+    create: function () {
+
         map = this.add.tilemap('myTilemap');
         map.addTilesetImage('scifi_platformTiles_32x32', 'myTileset');
 
@@ -40,51 +39,37 @@ GameStates.Level1.prototype = {
 
         this.physics.arcade.gravity.y = 300;
 
-        this.setupPlayer();
-        this.setupPlayerLives();
+        // Create a new player object
+        player = new Player(this.game, 50, 32, 'dude');
+        player.setupPlayerLives();
+        // and add it to the game
+        this.add.existing(player);
+
         this.setupEnemy();
         this.setupTreasure();
         //this.camera.follow(player);
 
-        cursors = this.input.keyboard.createCursorKeys();
-        jumpButton = this.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+        //play music
+        //this.playBackgroundMusic();
+        this.playSoundEffects();
+
+    },
+
+
+    playSoundEffects: function(){
+        starCollideSFX = this.add.audio('star-collide');
+        jumpSFX = this.add.audio('jump',0.2);
+        hurtSFX = this.add.audio('hurt');
+    },
+
+    playBackgroundMusic: function(){
+        music = this.add.audio('grey_sector', 0.2);
+        music.play();
     },
 
     setupTreasure: function () {
         treasure = this.add.sprite(565, 550, 'treasure');
         this.physics.enable(treasure, Phaser.Physics.ARCADE);
-    },
-
-    setupPlayer: function ()
-    {
-        player = this.add.sprite(50, 32, 'dude'); //50 x 32 = starting position
-        this.physics.enable(player, Phaser.Physics.ARCADE);
-
-        //player.body.bounce.y = 0.2;
-        player.scale.setTo(1.1, 1.1);
-        if (treasureCollected == true) {
-            player.body.collideWorldBounds = false;
-        }
-        else {
-            player.body.collideWorldBounds = true;
-        }
-        player.body.setSize(20, 32, 0, 0);
-        player.anchor.setTo(.5, 1); //so it flips around its middle
-        player.animations.add('move', [5, 6, 7, 8], 10, true);
-    },
-
-
-
-    setupPlayerLives: function ()
-    {
-        lives = this.add.group();
-        // calculate location of first life icon
-        var firstLifeIconX = 64;
-        for (var i = 0; i < playerLives; i++) {
-            var life = lives.create(firstLifeIconX + (30 * i), 30, 'dude');
-            life.scale.setTo(0.5, 0.5);
-            life.anchor.setTo(0.5, 0.5);
-        }
     },
 
     setupEnemy: function () {
@@ -128,6 +113,20 @@ GameStates.Level1.prototype = {
 
         this.physics.arcade.collide(skeleton, blockLayer, this.moveSkeleton);
 
+        ray = new Phaser.Line(skeleton.x, skeleton.y - 40, player.x, player.y - 40);
+        //check if a wall is obstructing the view
+        //if not being obstructed increase speed of enemy.
+        // Test if any walls intersect the ray
+        var intersect = this.getWallIntersection(ray);
+
+        if (intersect) {
+            // A wall is blocking their vision so change them to normal speed
+            skeleton.body.velocity.x = enemySpeed;
+        } else {
+            // Enemy can see Player so change them to faster speed
+            skeleton.body.velocity.x = enemySpeed * 2;
+        }
+
         player.body.velocity.x = 0;
 
         if (skeleton.body.blocked.right == true && currentDir == "right") {
@@ -154,26 +153,6 @@ GameStates.Level1.prototype = {
             }
         }
 
-        if (cursors.left.isDown) {
-            player.scale.x = -1;
-            player.body.velocity.x = -150;
-            player.animations.play('move');
-        }
-        else if (cursors.right.isDown) {
-            player.scale.x = 1;
-            player.body.velocity.x = 150;
-            player.animations.play('move');
-        }
-        else {
-            player.animations.stop();
-            player.frame = 5;
-        }
-
-        if (jumpButton.isDown && player.body.onFloor() && this.time.now > jumpTimer) {
-            player.body.velocity.y = -250;
-            jumpTimer = this.time.now + 250;
-        }
-
         //player death
         this.physics.arcade.overlap(player, skeleton, this.playerHit, null, this);
 
@@ -186,14 +165,30 @@ GameStates.Level1.prototype = {
         }
     },
 
+    getWallIntersection: function (ray) {
+
+        tileHits = blockLayer.getRayCastTiles(ray, 4, true, false); //getRayCastTiles(line, stepRate, collides, interestingFace)
+
+        if (tileHits.length > 0) {
+            //  Just so we can visually see the tiles being hit by the ray
+            //for (var i = 0; i < tileHits.length; i++) {
+            //    tileHits[i].debug = true;
+            //}
+            //blockLayer.dirty = true;
+            return true;
+        }
+        return false;
+    },
+
     playerHit: function () {
-        var life = lives.getFirstAlive();
-        if (life !== null) {
-            life.kill();
-            player.kill();
-            this.setupPlayer();
+        var respawn = player.playerHit();
+        if (respawn == true) {
+            //hurtSFX.play();
+            //this.setupPlayer();
+            player = new Player(this.game, 50, 32, 'dude');
+            this.add.existing(player);
         } else {
-            player.kill();
+            //player.kill();
             this.gameOver();
         }
     },
@@ -206,17 +201,19 @@ GameStates.Level1.prototype = {
         this.state.start('MainMenu');
     },
 
-
     treasureCollect: function () {
         treasure.kill();
+        starCollideSFX.play();
         treasureCollected = true;
         player.body.collideWorldBounds = false;
     },
 
     render: function () {
+        //this.debug.soundInfo(jumpSFX, 32, 32);
         //this.debug.text(this.time.physicsElapsed, 32, 32);
         //this.debug.body(player);
-        //this.debug.body(skeleton);
-        //this.debug.bodyInfo(player, 16, 24);
+        //this.game.debug.body(skeleton);
+        //this.game.debug.bodyInfo(skeleton, 16, 24);
+        //this.game.debug.geom(ray);
     }
 };
