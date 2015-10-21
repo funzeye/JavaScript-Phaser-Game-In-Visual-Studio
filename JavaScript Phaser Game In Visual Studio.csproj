@@ -21,7 +21,10 @@
   <ItemGroup>
     <Content Include="app.css" />
     <Content Include="app.js" />
+    <Content Include="assets\demoscene\star2.png" />
     <Content Include="assets\dude.png" />
+    <Content Include="assets\fonts\retroFonts\KNIGHT3.png" />
+    <Content Include="assets\loading.png" />
     <Content Include="assets\music\Grey Sector v0_86_0.mp3" />
     <Content Include="assets\scifi_platform_BG1.jpg" />
     <Content Include="assets\skeleton_3.png" />
@@ -31,6 +34,7 @@
     <Content Include="assets\star2.png" />
     <Content Include="assets\tilemaps\scifi_platformTiles_32x32.png" />
     <Content Include="boot.js" />
+    <Content Include="gameover.js" />
     <Content Include="level1.js" />
     <Content Include="img\phaser2.png" />
     <Content Include="index.html" />
