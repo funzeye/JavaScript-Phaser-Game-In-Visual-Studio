@@ -1,0 +1,2 @@
+//Run this below line in GIT bash to push subtree changes only to the gh-pages branch
+git subtree push --prefix "JavaScript Phaser Game In Visual Studio" origin gh-pages

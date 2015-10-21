@@ -7,6 +7,7 @@ window.onload = function() {
     game.state.add('MainMenu', GameStates.MainMenu);
     game.state.add('Level1', GameStates.Level1);
     game.state.add('Level2', GameStates.Level2);
+    game.state.add("GameOver", GameStates.GameOver);
 
     //game.player = new game.Player(game);
 

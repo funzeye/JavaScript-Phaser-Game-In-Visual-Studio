@@ -4,8 +4,23 @@
 
 GameStates.Preloader.prototype = {
     preload: function () {
+
+        // loading bar on splashscreen - start
+
+        var loadingBar = this.add.sprite(this.world.centerX, this.world.centerY, "loading");
+        loadingBar.anchor.setTo(0.5, 0.5);
+        this.load.setPreloadSprite(loadingBar);
+
+        // loading bar on splashscreen - end
+
         // load all game assets
         // images, spritesheets, atlases, audio etc..
+
+        // assets for main menu screen
+        this.load.image('starwipe', 'assets/demoscene/star2.png');
+        this.load.image('knightHawks', 'assets/fonts/retroFonts/KNIGHT3.png');
+        //
+
         this.load.tilemap('myTilemap', 'assets/tilemaps/scifi.json', null, Phaser.Tilemap.TILED_JSON);
         this.load.image('myTileset', "assets/tilemaps/scifi_platformTiles_32x32.png");
         this.load.spritesheet('dude', 'assets/dude.png', 32, 48);
@@ -30,6 +45,6 @@ GameStates.Preloader.prototype = {
     },
     create: function () {
         //call next state - change this to MainMenu when development complete
-        this.state.start('Level1');
+        this.state.start('MainMenu');
     }
 };
