@@ -80,6 +80,6 @@ GameStates.MainMenu.prototype = {
     },
 
     playGame: function () {
-            this.state.start('Leve1');
+            this.state.start('Level1');
     }
 };
